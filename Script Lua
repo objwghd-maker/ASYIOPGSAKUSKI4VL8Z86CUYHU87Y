@@ -211,7 +211,7 @@ UIStroke1.Color = Color3.fromRGB(0, 230, 255)
 UIStroke1.Thickness = 1
 UIStroke1.Parent = TpBtn1
 
-TpBtn1.MouseButton1Click:Connect(function`()
+TpBtn1.MouseButton1Click:Connect(function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         char.HumanoidRootPart.CFrame = CFrame.new(-5.36, 3.98, -9.85)
@@ -244,4 +244,5 @@ TpBtn2.MouseButton1Click:Connect(function()
         char.HumanoidRootPart.CFrame = CFrame.new(16.99, 3.98, 110.50)
     end
 end)
+
 
