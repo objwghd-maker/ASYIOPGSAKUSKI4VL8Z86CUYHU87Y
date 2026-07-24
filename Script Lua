@@ -1,6 +1,8 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local LocalPlayer = Players.LocalPlayer
 
@@ -8,238 +10,286 @@ LocalPlayer.CameraMode = Enum.CameraMode.Classic
 LocalPlayer.CameraMinZoomDistance = 0.5
 LocalPlayer.CameraMaxZoomDistance = 128
 
-if CoreGui:FindFirstChild("MainHubUI") then
-    CoreGui.MainHubUI:Destroy()
+if CoreGui:FindFirstChild("AdvancedHubUI") then
+    CoreGui.AdvancedHubUI:Destroy()
 end
 
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MainHubUI"
+ScreenGui.Name = "AdvancedHubUI"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+
+local NotifContainer = Instance.new("Frame")
+NotifContainer.Size = UDim2.new(0, 240, 1, 0)
+NotifContainer.Position = UDim2.new(1, -250, 0, 10)
+NotifContainer.BackgroundTransparency = 1
+NotifContainer.Parent = ScreenGui
+
+local NotifLayout = Instance.new("UIListLayout")
+NotifLayout.SortOrder = Enum.SortOrder.LayoutOrder
+NotifLayout.Padding = UDim.new(0, 6)
+NotifLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+NotifLayout.Parent = NotifContainer
+
+local function SendNotification(title, text)
+    local card = Instance.new("Frame")
+    card.Size = UDim2.new(1, 0, 0, 50)
+    card.BackgroundColor3 = Color3.fromRGB(10, 14, 22)
+    card.BackgroundTransparency = 0.1
+    card.Parent = NotifContainer
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = card
+
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(0, 230, 255)
+    stroke.Thickness = 1
+    stroke.Parent = card
+
+    local tLabel = Instance.new("TextLabel")
+    tLabel.Size = UDim2.new(1, -16, 0, 20)
+    tLabel.Position = UDim2.new(0, 8, 0, 4)
+    tLabel.BackgroundTransparency = 1
+    tLabel.Text = title
+    tLabel.TextColor3 = Color3.fromRGB(0, 240, 255)
+    tLabel.TextSize = 11
+    tLabel.Font = Enum.Font.GothamBold
+    tLabel.TextXAlignment = Enum.TextXAlignment.Left
+    tLabel.Parent = card
+
+    local mLabel = Instance.new("TextLabel")
+    mLabel.Size = UDim2.new(1, -16, 0, 20)
+    mLabel.Position = UDim2.new(0, 8, 0, 22)
+    mLabel.BackgroundTransparency = 1
+    mLabel.Text = text
+    mLabel.TextColor3 = Color3.fromRGB(200, 220, 240)
+    mLabel.TextSize = 10
+    mLabel.Font = Enum.Font.Gotham
+    mLabel.TextXAlignment = Enum.TextXAlignment.Left
+    mLabel.Parent = card
+
+    task.delay(3, function()
+        TweenService:Create(card, TweenInfo.new(0.3), {BackgroundTransparency = 1}):Play()
+        task.wait(0.3)
+        card:Destroy()
+    end)
+end
 
 local ToggleMenuBtn = Instance.new("TextButton")
-ToggleMenuBtn.Name = "ToggleMenuBtn"
-ToggleMenuBtn.Size = UDim2.new(0, 70, 0, 32)
-ToggleMenuBtn.Position = UDim2.new(0.02, 0, 0.2, 0)
-ToggleMenuBtn.BackgroundColor3 = Color3.fromRGB(20, 24, 32)
-ToggleMenuBtn.Text = "MENU"
-ToggleMenuBtn.TextColor3 = Color3.fromRGB(0, 230, 255)
-ToggleMenuBtn.TextSize = 11
+ToggleMenuBtn.Size = UDim2.new(0, 150, 0, 48)
+ToggleMenuBtn.Position = UDim2.new(0.02, 0, 0.15, 0)
+ToggleMenuBtn.BackgroundColor3 = Color3.fromRGB(8, 12, 20)
+ToggleMenuBtn.Text = "  SYSTEM"
+ToggleMenuBtn.TextColor3 = Color3.fromRGB(0, 240, 255)
+ToggleMenuBtn.TextSize = 18
 ToggleMenuBtn.Font = Enum.Font.GothamBold
 ToggleMenuBtn.Active = true
 ToggleMenuBtn.Draggable = true
 ToggleMenuBtn.Parent = ScreenGui
 
-local OpenCorner = Instance.new("UICorner")
-OpenCorner.CornerRadius = UDim.new(0, 6)
-OpenCorner.Parent = ToggleMenuBtn
+local PolyCorner = Instance.new("UICorner", ToggleMenuBtn)
+PolyCorner.CornerRadius = UDim.new(0, 4)
 
-local OpenStroke = Instance.new("UIStroke")
-OpenStroke.Color = Color3.fromRGB(0, 230, 255)
-OpenStroke.Thickness = 2
-OpenStroke.Parent = ToggleMenuBtn
+local PolyStroke = Instance.new("UIStroke", ToggleMenuBtn)
+PolyStroke.Color = Color3.fromRGB(0, 240, 255)
+PolyStroke.Thickness = 2.5
+
+local IconFrame = Instance.new("Frame", ToggleMenuBtn)
+IconFrame.Size = UDim2.new(0, 16, 0, 16)
+IconFrame.Position = UDim2.new(0, 14, 0.5, -8)
+IconFrame.BackgroundColor3 = Color3.fromRGB(0, 240, 255)
+IconFrame.Rotation = 45
+local IconCorner = Instance.new("UICorner", IconFrame)
+IconCorner.CornerRadius = UDim.new(0, 2)
 
 local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 220, 0, 240)
-MainFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 24, 32)
+MainFrame.Size = UDim2.new(0, 280, 0, 340)
+MainFrame.Position = UDim2.new(0.1, 0, 0.15, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(8, 12, 20)
 MainFrame.Active = true
 MainFrame.Draggable = true
-MainFrame.Visible = true
+MainFrame.ClipsDescendants = true
 MainFrame.Parent = ScreenGui
+MainFrame.Visible = false
 
 local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 8)
+MainCorner.CornerRadius = UDim.new(0, 10)
 MainCorner.Parent = MainFrame
 
 local MainStroke = Instance.new("UIStroke")
-MainStroke.Color = Color3.fromRGB(0, 230, 255)
+MainStroke.Color = Color3.fromRGB(0, 220, 255)
 MainStroke.Thickness = 2
 MainStroke.Parent = MainFrame
 
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 40)
+TitleBar.BackgroundTransparency = 1
+TitleBar.Parent = MainFrame
+
 local TitleLabel = Instance.new("TextLabel")
-TitleLabel.Name = "TitleLabel"
-TitleLabel.Size = UDim2.new(1, -30, 0, 30)
-TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+TitleLabel.Size = UDim2.new(1, -50, 1, 0)
+TitleLabel.Position = UDim2.new(0, 12, 0, 0)
 TitleLabel.BackgroundTransparency = 1
-TitleLabel.Text = "MAIN MENU"
-TitleLabel.TextColor3 = Color3.fromRGB(0, 230, 255)
-TitleLabel.TextSize = 12
+TitleLabel.RichText = true
+TitleLabel.Text = "<b>⚡ ศูนย์สั่งการ</b>"
+TitleLabel.TextColor3 = Color3.fromRGB(0, 220, 255)
+TitleLabel.TextSize = 14
 TitleLabel.Font = Enum.Font.GothamBold
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-TitleLabel.Parent = MainFrame
+TitleLabel.TextYAlignment = Enum.TextYAlignment.Center
+TitleLabel.Parent = TitleBar
 
 local CloseBtn = Instance.new("TextButton")
-CloseBtn.Name = "CloseBtn"
-CloseBtn.Size = UDim2.new(0, 25, 0, 25)
-CloseBtn.Position = UDim2.new(1, -28, 0, 3)
-CloseBtn.BackgroundTransparency = 1
-CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
-CloseBtn.TextSize = 12
+CloseBtn.Size = UDim2.new(0, 28, 0, 28)
+CloseBtn.Position = UDim2.new(1, -36, 0.5, -14)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(40, 10, 10)
+CloseBtn.BackgroundTransparency = 0.2
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 50, 50)
+CloseBtn.TextSize = 14
 CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.Parent = MainFrame
+CloseBtn.Parent = TitleBar
+
+local CloseCorner = Instance.new("UICorner")
+CloseCorner.CornerRadius = UDim.new(0, 6)
+CloseCorner.Parent = CloseBtn
+
+local CloseStroke = Instance.new("UIStroke", CloseBtn)
+CloseStroke.Color = Color3.fromRGB(255, 50, 50)
+CloseStroke.Thickness = 1.5
 
 CloseBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
+    TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
 end)
 
 ToggleMenuBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = not MainFrame.Visible
+    if MainFrame.Visible then
+        TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0.5}):Play()
+    else
+        TweenService:Create(ToggleMenuBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
+    end
 end)
 
+local LineSeparator = Instance.new("Frame")
+LineSeparator.Size = UDim2.new(1, -24, 0, 1)
+LineSeparator.Position = UDim2.new(0, 12, 0, 40)
+LineSeparator.BackgroundColor3 = Color3.fromRGB(0, 180, 200)
+LineSeparator.BackgroundTransparency = 0.4
+LineSeparator.BorderSizePixel = 0
+LineSeparator.Parent = MainFrame
+
+local Container = Instance.new("ScrollingFrame")
+Container.Size = UDim2.new(1, -16, 1, -55)
+Container.Position = UDim2.new(0, 8, 0, 48)
+Container.BackgroundTransparency = 1
+Container.BorderSizePixel = 0
+Container.CanvasSize = UDim2.new(0, 0, 0, 220)
+Container.ScrollBarThickness = 0
+Container.Parent = MainFrame
+
 local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Parent = MainFrame
+UIListLayout.Parent = Container
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 6)
+UIListLayout.Padding = UDim.new(0, 10)
 UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
-local HeaderPadding = Instance.new("Frame")
-HeaderPadding.Size = UDim2.new(1, 0, 0, 32)
-HeaderPadding.BackgroundTransparency = 1
-HeaderPadding.LayoutOrder = 0
-HeaderPadding.Parent = MainFrame
+local function CreateSciFiButton(icon, text, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -4, 0, 45)
+    btn.BackgroundColor3 = Color3.fromRGB(12, 18, 30)
+    btn.Text = "  " .. text
+    btn.TextColor3 = Color3.fromRGB(200, 220, 255)
+    btn.TextSize = 13
+    btn.Font = Enum.Font.GothamBold
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.Parent = Container
 
-local ToggleBtn = Instance.new("TextButton")
-ToggleBtn.Name = "ToggleBtn"
-ToggleBtn.Size = UDim2.new(0, 200, 0, 36)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-ToggleBtn.Text = "วิ่งเร็ว 50: OFF"
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
-ToggleBtn.TextSize = 11
-ToggleBtn.Font = Enum.Font.GothamBold
-ToggleBtn.LayoutOrder = 1
-ToggleBtn.Parent = MainFrame
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = btn
 
-local UICornerSpeed = Instance.new("UICorner")
-UICornerSpeed.CornerRadius = UDim.new(0, 6)
-UICornerSpeed.Parent = ToggleBtn
+    local stroke = Instance.new("UIStroke")
+    stroke.Color = Color3.fromRGB(0, 200, 230)
+    stroke.Thickness = 1.5
+    stroke.Parent = btn
 
-local UIStrokeSpeed = Instance.new("UIStroke")
-UIStrokeSpeed.Color = Color3.fromRGB(0, 230, 255)
-UIStrokeSpeed.Thickness = 1
-UIStrokeSpeed.Parent = ToggleBtn
+    local IconLabel = Instance.new("TextLabel")
+    IconLabel.Size = UDim2.new(0, 30, 1, 0)
+    IconLabel.Position = UDim2.new(0, 8, 0, 0)
+    IconLabel.BackgroundTransparency = 1
+    IconLabel.Text = icon
+    IconLabel.TextSize = 18
+    IconLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    IconLabel.TextXAlignment = Enum.TextXAlignment.Center
+    IconLabel.Parent = btn
+
+    btn.MouseEnter:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(20, 30, 50)}):Play()
+        TweenService:Create(stroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 255, 255)}):Play()
+    end)
+
+    btn.MouseLeave:Connect(function()
+        TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(12, 18, 30)}):Play()
+        TweenService:Create(stroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(0, 200, 230)}):Play()
+    end)
+
+    btn.MouseButton1Click:Connect(callback)
+    return btn
+end
 
 local speedEnabled = false
 local defaultSpeed = 16
 local targetSpeed = 50
 local speedConnection = nil
 
-local function applySpeed()
-    if speedEnabled then
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                hum.WalkSpeed = targetSpeed
-            end
-        end
-    end
-end
-
-ToggleBtn.MouseButton1Click:Connect(function()
+local SpeedBtn = CreateSciFiButton("🏃", "วิ่งเร็ว 50 : OFF", function()
     speedEnabled = not speedEnabled
-    
     if speedEnabled then
-        ToggleBtn.Text = "วิ่งเร็ว 50: ON"
-        ToggleBtn.TextColor3 = Color3.fromRGB(80, 255, 120)
-        speedConnection = RunService.Heartbeat:Connect(applySpeed)
-    else
-        ToggleBtn.Text = "วิ่งเร็ว 50: OFF"
-        ToggleBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
-        if speedConnection then
-            speedConnection:Disconnect()
-            speedConnection = nil
-        end
-        local char = LocalPlayer.Character
-        if char then
-            local hum = char:FindFirstChildOfClass("Humanoid")
-            if hum then
-                hum.WalkSpeed = defaultSpeed
+        SpeedBtn.Text = "  วิ่งเร็ว 50 : ON"
+        SpeedBtn.TextColor3 = Color3.fromRGB(80, 255, 150)
+        speedConnection = RunService.Heartbeat:Connect(function()
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChildOfClass("Humanoid") then
+                char:FindFirstChildOfClass("Humanoid").WalkSpeed = targetSpeed
             end
+        end)
+        SendNotification("ระบบความเร็ว", "เปิดใช้งาน Speed 50 เรียบร้อย")
+    else
+        SpeedBtn.Text = "  วิ่งเร็ว 50 : OFF"
+        SpeedBtn.TextColor3 = Color3.fromRGB(200, 220, 255)
+        if speedConnection then speedConnection:Disconnect() end
+        local char = LocalPlayer.Character
+        if char and char:FindFirstChildOfClass("Humanoid") then
+            char:FindFirstChildOfClass("Humanoid").WalkSpeed = defaultSpeed
         end
+        SendNotification("ระบบความเร็ว", "ปิดการใช้งานแล้ว")
     end
 end)
 
-local TeleportBtn = Instance.new("TextButton")
-TeleportBtn.Name = "TeleportBtn"
-TeleportBtn.Size = UDim2.new(0, 200, 0, 36)
-TeleportBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-TeleportBtn.Text = "ไปที่ประตู"
-TeleportBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-TeleportBtn.TextSize = 11
-TeleportBtn.Font = Enum.Font.GothamBold
-TeleportBtn.LayoutOrder = 2
-TeleportBtn.Parent = MainFrame
-
-local TeleportCorner = Instance.new("UICorner")
-TeleportCorner.CornerRadius = UDim.new(0, 6)
-TeleportCorner.Parent = TeleportBtn
-
-local TeleportStroke = Instance.new("UIStroke")
-TeleportStroke.Color = Color3.fromRGB(0, 230, 255)
-TeleportStroke.Thickness = 1
-TeleportStroke.Parent = TeleportBtn
-
-TeleportBtn.MouseButton1Click:Connect(function()
+CreateSciFiButton("🚪", "ไปที่ประตู", function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         char.HumanoidRootPart.CFrame = CFrame.new(-36.11, 3.90, 111.03)
+        SendNotification("เทเลพอร์ต", "เดินทางไปที่ประตูสำเร็จ")
     end
 end)
 
-local TpBtn1 = Instance.new("TextButton")
-TpBtn1.Name = "TpBtn1"
-TpBtn1.Size = UDim2.new(0, 200, 0, 36)
-TpBtn1.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-TpBtn1.Text = "ไปที่ห้องพยาบาล"
-TpBtn1.TextColor3 = Color3.fromRGB(255, 255, 255)
-TpBtn1.TextSize = 11
-TpBtn1.Font = Enum.Font.GothamBold
-TpBtn1.LayoutOrder = 3
-TpBtn1.Parent = MainFrame
-
-local UICorner1 = Instance.new("UICorner")
-UICorner1.CornerRadius = UDim.new(0, 6)
-UICorner1.Parent = TpBtn1
-
-local UIStroke1 = Instance.new("UIStroke")
-UIStroke1.Color = Color3.fromRGB(0, 230, 255)
-UIStroke1.Thickness = 1
-UIStroke1.Parent = TpBtn1
-
-TpBtn1.MouseButton1Click:Connect(function()
+CreateSciFiButton("🏥", "ไปที่ห้องพยาบาล", function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         char.HumanoidRootPart.CFrame = CFrame.new(-5.36, 3.98, -9.85)
+        SendNotification("เทเลพอร์ต", "เดินทางไปที่ห้องพยาบาลสำเร็จ")
     end
 end)
 
-local TpBtn2 = Instance.new("TextButton")
-TpBtn2.Name = "TpBtn2"
-TpBtn2.Size = UDim2.new(0, 200, 0, 36)
-TpBtn2.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-TpBtn2.Text = "ไปที่ลงทะเบียนผู้ป่วย"
-TpBtn2.TextColor3 = Color3.fromRGB(255, 255, 255)
-TpBtn2.TextSize = 11
-TpBtn2.Font = Enum.Font.GothamBold
-TpBtn2.LayoutOrder = 4
-TpBtn2.Parent = MainFrame
-
-local UICorner2 = Instance.new("UICorner")
-UICorner2.CornerRadius = UDim.new(0, 6)
-UICorner2.Parent = TpBtn2
-
-local UIStroke2 = Instance.new("UIStroke")
-UIStroke2.Color = Color3.fromRGB(0, 230, 255)
-UIStroke2.Thickness = 1
-UIStroke2.Parent = TpBtn2
-
-TpBtn2.MouseButton1Click:Connect(function()
+CreateSciFiButton("📋", "ไปที่ลงทะเบียนผู้ป่วย", function()
     local char = LocalPlayer.Character
     if char and char:FindFirstChild("HumanoidRootPart") then
         char.HumanoidRootPart.CFrame = CFrame.new(16.99, 3.98, 110.50)
+        SendNotification("เทเลพอร์ต", "เดินทางไปจุดลงทะเบียนสำเร็จ")
     end
 end)
-
