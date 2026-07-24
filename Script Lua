@@ -43,7 +43,7 @@ OpenStroke.Parent = ToggleMenuBtn
 
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 200, 0, 250)
+MainFrame.Size = UDim2.new(0, 210, 0, 270)
 MainFrame.Position = UDim2.new(0.1, 0, 0.2, 0)
 MainFrame.BackgroundColor3 = Color3.fromRGB(20, 24, 32)
 MainFrame.Active = true
@@ -62,8 +62,8 @@ MainStroke.Parent = MainFrame
 
 local TitleLabel = Instance.new("TextLabel")
 TitleLabel.Name = "TitleLabel"
-TitleLabel.Size = UDim2.new(1, -30, 0, 35)
-TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+TitleLabel.Size = UDim2.new(1, -35, 0, 35)
+TitleLabel.Position = UDim2.new(0, 12, 0, 0)
 TitleLabel.BackgroundTransparency = 1
 TitleLabel.Text = "MAIN MENU"
 TitleLabel.TextColor3 = Color3.fromRGB(0, 230, 255)
@@ -105,9 +105,9 @@ HeaderPadding.Parent = MainFrame
 
 local ToggleBtn = Instance.new("TextButton")
 ToggleBtn.Name = "ToggleBtn"
-ToggleBtn.Size = UDim2.new(0, 170, 0, 38)
+ToggleBtn.Size = UDim2.new(0, 185, 0, 38)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-ToggleBtn.Text = "SPEED 50: OFF"
+ToggleBtn.Text = "วิ่งเร็ว 50: OFF"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
 ToggleBtn.TextSize = 12
 ToggleBtn.Font = Enum.Font.GothamBold
@@ -144,11 +144,11 @@ ToggleBtn.MouseButton1Click:Connect(function()
     speedEnabled = not speedEnabled
     
     if speedEnabled then
-        ToggleBtn.Text = "SPEED 50: ON"
+        ToggleBtn.Text = "วิ่งเร็ว 50: ON"
         ToggleBtn.TextColor3 = Color3.fromRGB(80, 255, 120)
         speedConnection = RunService.Heartbeat:Connect(applySpeed)
     else
-        ToggleBtn.Text = "SPEED 50: OFF"
+        ToggleBtn.Text = "วิ่งเร็ว 50: OFF"
         ToggleBtn.TextColor3 = Color3.fromRGB(255, 80, 80)
         if speedConnection then
             speedConnection:Disconnect()
@@ -166,9 +166,9 @@ end)
 
 local TeleportBtn = Instance.new("TextButton")
 TeleportBtn.Name = "TeleportBtn"
-TeleportBtn.Size = UDim2.new(0, 170, 0, 38)
+TeleportBtn.Size = UDim2.new(0, 185, 0, 38)
 TeleportBtn.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-TeleportBtn.Text = "TELEPORT MAIN"
+TeleportBtn.Text = "ไปที่ประตู"
 TeleportBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 TeleportBtn.TextSize = 12
 TeleportBtn.Font = Enum.Font.GothamBold
@@ -193,9 +193,9 @@ end)
 
 local TpBtn1 = Instance.new("TextButton")
 TpBtn1.Name = "TpBtn1"
-TpBtn1.Size = UDim2.new(0, 170, 0, 38)
+TpBtn1.Size = UDim2.new(0, 185, 0, 38)
 TpBtn1.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-TpBtn1.Text = "TP 1"
+TpBtn1.Text = "ไปที่ห้องพยาบาล"
 TpBtn1.TextColor3 = Color3.fromRGB(255, 255, 255)
 TpBtn1.TextSize = 12
 TpBtn1.Font = Enum.Font.GothamBold
@@ -220,11 +220,11 @@ end)
 
 local TpBtn2 = Instance.new("TextButton")
 TpBtn2.Name = "TpBtn2"
-TpBtn2.Size = UDim2.new(0, 170, 0, 38)
+TpBtn2.Size = UDim2.new(0, 185, 0, 38)
 TpBtn2.BackgroundColor3 = Color3.fromRGB(30, 35, 45)
-TpBtn2.Text = "TP 2"
+TpBtn2.Text = "ไปที่ลงทะเบียนผู้ป่วย"
 TpBtn2.TextColor3 = Color3.fromRGB(255, 255, 255)
-TpBtn2.TextSize = 12
+TpBtn2.TextSize = 11
 TpBtn2.Font = Enum.Font.GothamBold
 TpBtn2.LayoutOrder = 4
 TpBtn2.Parent = MainFrame
